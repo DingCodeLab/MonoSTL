@@ -1,0 +1,13 @@
+*.pth
+*.pyc
+*.bin
+__pycache__/
+outputs/
+evaluation/
+compare_box_Seg/
+kitti_seg
+log/
+*.png
+visual/
+*.txt
+rgb_outputs/

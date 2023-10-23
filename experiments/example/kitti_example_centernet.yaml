@@ -1,0 +1,54 @@
+random_seed: 444
+
+dataset:
+  type: &dataset_type 'KITTI'
+  batch_size: 24
+  use_3d_center: True
+  class_merging: False
+  use_dontcare: False
+  bbox2d_type: 'anno'   # 'proj' or 'anno'
+  meanshape: False      # use predefined anchor or not
+  writelist: ['Car']
+  random_flip: 0.5
+  random_crop: 0.5
+  scale: 0.4
+  shift: 0.0
+
+model:
+  type: 'centernet3d'  #centernet3d or distill_seperate or distill
+  backbone: 'dla34'
+  neck: 'DLAUp'
+  num_class: 3
+
+optimizer:
+  type: 'adam'
+  lr: 0.00125
+  weight_decay: 0.00001
+
+lr_scheduler:
+  warmup: True  # 5 epoches, cosine warmup, init_lir=0.00001 in default
+  decay_rate: 0.1
+  decay_list: [90, 120]
+
+trainer:
+  spilt: 'train' # 'train' or 'val' or 'trainval'
+  lr_scheduler_type: 'decay' # 'decay' or 'cyclic
+  max_epoch: 140
+  gpu_ids: 0,1
+  save_frequency: 140 # checkpoint save interval (in epoch)
+  save_every_pth_after_epoch: 125
+  disp_frequency: 300 # display interval (in batch)
+  model_save_path: 'test'
+  pretrain_model: '/home/XXXX/code/MonoSTL/MonoSTL_MonoDLE/log/base_pth/rgb_pretrain.pth'
+  # pretrain_model: '/home/XXXX/code/MonoSTL/MonoSTL_MonoDLE/log/base_pth/depth_pretrain.pth'
+  #resume_model: ''
+
+
+
+tester:
+  type: *dataset_type
+  mode: all   # 'single' or 'all'
+  test_mode: 'val' # 'test_submit' or 'val'
+  checkpoint: '/home/XXXX/code/MonoSTL/MonoSTL_MonoDLE/log/base_pth/rgb_pretrain.pth'  # for 'single' mode
+  checkpoints_dir: 'test'  # for 'all' model
+  threshold: 0.2  # confidence filter
